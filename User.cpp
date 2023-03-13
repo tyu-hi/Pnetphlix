@@ -6,7 +6,7 @@ using namespace std;
 
 User::User(const string& full_name, const string& email,
            const vector<string>& watch_history)
-    : m_watchHistory{ watch_history }, m_fullName(full_name), m_email(email)
+    : m_watchHistory{watch_history}, m_fullName(full_name), m_email(email)
         //using { } brackets, this is called list initalization, and it is good for contaienrs
 {
     // Replace this line with correct code.

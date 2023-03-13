@@ -5,6 +5,7 @@
 #include <list>
 #include <iostream>
 #include <string>
+#include <stack>
 
 template <typename KeyType, typename ValueType>
 class TreeMultimap
@@ -12,24 +13,8 @@ class TreeMultimap
 private:
     struct BSTNode //BST Node
     {
-        //public:
-            //each node contains a key, vector values associated with the key, and a vector of pointers
-            //to its left and right child nodes, and its parent node 
-            //binary tree: every node has left and right children node
-            //KeyType key;
-            //std::vector<ValueType> value;
-            //std::vector<std::unique_ptr<BSTNode>> left;
-            //std::vector<std::unique_ptr<BSTNode>> right;
-            ////unique_ptr autoamically deltes nodes when node is no longer needed, and prevents ownership problems
-            //std::vector<BSTNode*> parent;
-            //BSTNode(const KeyType& k, const ValueType& v, BSTNode* parent = nullptr)
-            //    :key(k), value(v), left(nullptr), right(nullptr), parent(parent)
-            //{
-
-            //}
-
         KeyType key;
-        std::vector<ValueType> value;
+        std::vector<ValueType> value;   //since eacy key can have mutliple values
         BSTNode* left;
         BSTNode* right;
         BSTNode(const KeyType& k, const ValueType& v)
@@ -45,27 +30,39 @@ private:
     };
 
     BSTNode* root;
+    void deleteNode(BSTNode* curr)
+    {
+        if (curr == nullptr)
+        {
+            return;
+        }
+        deleteNode(curr->left); //delete nodes in left sub-tree
+        deleteNode(curr->right);    //delete nodes in right sub-tree
+        delete curr;    //free current node
+    }
+
 public:
     class Iterator
     {
     private:
-        std::list<BSTNode*> duplicates;
-        typename std::list<BSTNode*>::const_iterator list_it;
-        //BSTNode* current;
+        std::vector<ValueType>* vectorValues; //this is the values in the vector, which is a pointer to our node vector
+        //a pointer to a vector of values of type ValueType
+        typename std::vector<ValueType>::iterator vector_iterator;   //this is our iterator
     public:
         Iterator()
-            :duplicates(), list_it(duplicates.end())
+            :vector_iterator(vectorValues->end())
             //curr_node(nullptr)
             //this creates invalid iterator
         {
             // Replace this line with correct code.
         }
 
-        Iterator(BSTNode* node)
+        Iterator(std::vector<ValueType>* valuePtr)
             /*:curr_node(node)*/
         {
-            duplicates = node->duplicates;
-            list_it = duplicates.begin();
+            vectorValues = valuePtr;
+            //duplicates = node->duplicates;
+            vector_iterator = valuePtr->begin();
         }
 
         ValueType& get_value() const
@@ -73,7 +70,7 @@ public:
             //returns a reference to current value reffered to by iterator.
             //return m_node->value.back();
             //return curr_node->value;
-            return (*list_it)->value;
+            return (*vector_iterator);
             //.back() returns a referrence to the last element of vector
             //throw 1;  // Replace this line with correct code.
         }
@@ -90,12 +87,14 @@ public:
                 return false;
             }*/
             //return false;   // Replace this line with correct code.
-            return list_it != duplicates.end();
+            return vector_iterator != vectorValues->end();
         }
 
         void advance()
         {
-            ++list_it;
+            vector_iterator++;
+            //increment iterator
+
           /*  if (curr_node != nullptr)
             {
                 if (curr_node->right != nullptr)
@@ -168,12 +167,9 @@ public:
             //}
             // Replace this line with correct code.
         }
-    //private:
-    //    //BSTNode* m_node;
-    //    BSTNode* curr_node;
     };
 
-    //Tree Class beigns here:
+    //TreeMultimap Class beigns here:
     TreeMultimap()
         :root(nullptr)
     {
@@ -182,19 +178,111 @@ public:
 
     ~TreeMultimap()
     {
-     //   delete root;
+        deleteNode(root);
+        //delete root;
         //root.reset();
         // Replace this line with correct code.
+
+        ////using a stack to perform postorder traversal of tree for deleting
+        //std::stack<BSTNode*> stack;
+        //stack.push(root);
+
+        //while (!stack.empty())
+        //{
+        //    BSTNode* node = stack.top();
+        //    stack.pop();
+        //    if (node)
+        //    {
+        //        //push left and right children to stack
+        //        stack.push(node->left);
+        //        stack.push(node > right);
+        //        //delete the current node
+        //        delete node;
+        //    }
+        //}
+        //using stack to traverse inorder traversal
+        
+        //std::stack<BSTNode*> node;
+        //BSTNode* curr = root;
+        //while (curr != nullptr || !node.empty())
+        //{
+        //    while(curr->left != nullptr)
+        //    {
+        //        node.push(curr);
+        //        curr = curr->left;
+        //        curr = node.top();
+        //        node.pop();
+
+        //        //delete current node's value vector using built-in .clear()
+        //        curr->value.clear();
+        //        delete curr;
+        //        curr = curr->left;
+        //    }
+        //    while (curr->right != nullptr)
+        //    {
+        //        node.push(curr);
+        //        curr = curr->left;
+        //        curr = node.top();
+        //        node.pop();
+
+        //        //delete current node's value vector using built-in .clear()
+        //        curr->value.clear();
+        //        delete curr;
+        //        curr = curr->right;
+        //    }
+        //}
     }
 
     void insert(const KeyType& key, const ValueType& value)
     {
         // Replace this line with correct code.
 
-        
         //insert searches the BST to find the node for the given key
         //then, it either adds a new value to the node's vector
         //or, it creates a new child node with the given key, if mapping mapping key to multiple values
+
+        //create a new node with key, value
+        if (root == nullptr)
+        {
+            BSTNode* newNode = new BSTNode(key, value);
+            //if tree is empty, set new node as root
+            root = newNode;
+            return;
+        }
+        BSTNode* current = root;
+        while (true)
+        {
+            if (key < current->key) //go left
+            {
+                if (current->left == nullptr)
+                {
+                    BSTNode* newNode = new BSTNode(key, value);
+                    //if there is no left child, set new node as left child
+                    current->left = newNode;
+                    // newNode->parent = current;
+                    break;
+                }
+                //else, continue serachig left
+                current = current->left;
+            }
+            else if (key == current->key)
+            {
+                current->value.push_back(value);
+                break;
+            }
+            else  //go right
+            {
+                if (current->right == nullptr)
+                {
+                    BSTNode* newNode = new BSTNode(key, value);
+                    current->right = newNode;
+                    // newNode->parent = current;
+                    break;
+                }
+                //continue searching right
+                current = current->right;
+            }
+        }
         
         //BSTNode* node = root.get();
         //.get() returns a raw pointer to the root node
@@ -242,7 +330,6 @@ public:
         //{
         //    parent->right.emplace_back(new BSTNode(key, value, parent));
         //}
-
         //BSTNode* newNode = new BSTNode(key, value);
         //if (root == nullptr)
         //{
@@ -298,55 +385,35 @@ public:
         //    }
         //    newNode->parent = parent;
 
-        //}
-
-        //create a new node with key, value
-        if (root == nullptr)
-        {
-            //if tree is empty, set new node as root
-            root = newNode;
-            return;
-        }
-        BSTNode* current = root;
-        while (true)
-        {
-            if (key < current->key) //go left
-            {
-                if (current->left == nullptr)
-                {
-                    BSTNode* newNode = new BSTNode(key, value);
-                    //if there is no left child, set new node as left child
-                    current->left = newNode;
-                   // newNode->parent = current;
-                    break;
-                }
-                //else, continue serachig left
-                current = current->left;
-            }
-            else if (key == current->key)
-            {
-                current->value.push_back(value);
-                break;
-            }
-            else  //go right
-            {
-                if (current->right == nullptr)
-                {
-                    BSTNode* newNode = new BSTNode(key, value);
-                    current->right = newNode;
-                    // newNode->parent = current;
-                    break;
-                }
-                //continue searching right
-                current = current->right;
-            }
-        }
     }
 
     Iterator find(const KeyType& key) const
     {
         //find() allows you to serach multimap for specified key
-        
+        BSTNode* curr = root;
+        while (curr != nullptr)
+        {
+            if (key == curr->key)
+            {
+                return Iterator(&(curr->value));
+            }
+            else if (key < curr->key)
+            {
+                curr = curr->left;
+            }
+            else
+            {
+                curr = curr->right;
+            }
+        }
+        if (curr == nullptr)
+        {
+            return Iterator();
+        }
+        return Iterator(&(curr->value));
+        //returns reference to the curr's node's vector of values
+        //each node has a vector of values
+
         //BSTNode* node = root.get();
         //while (node != nullptr && key != node->key)
         //{
@@ -385,7 +452,6 @@ public:
         //    return Iterator(node);
         //}    
         //return Iterator();  // Replace this line with correct code.
-
         /*BSTNode* current = root;
         while (current != nullptr && current->key != key)
         {
@@ -399,27 +465,6 @@ public:
             }
         }
         return Iterator(current);*/
-        BSTNode* curr = root;
-        while (curr != nullptr)
-        {
-            if (key == curr->key)
-            {
-                return curr;
-            }
-            else if (key < curr->key)
-            {
-                curr = curr->left;
-            }
-            else
-            {
-                curr = curr->right;
-            }
-        }
-        if (curr == nullptr)
-        {
-            return Iterator();
-        }
-        return Iterator(curr);
     }
 
 };
