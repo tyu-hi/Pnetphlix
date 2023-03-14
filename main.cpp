@@ -26,7 +26,8 @@ class Iterator;
   // data files to makde debuggiing easier, so you can replace the string
   // literals with the names of those smaller files.
 
-const string USER_DATAFILE  = "C:/Users/gongt/Desktop/Pnetphlix/users.txt" /*"users.txt"*/;
+//const string USER_DATAFILE  = "C:/Users/gongt/Desktop/Pnetphlix/users.txt" /*"users.txt"*/;
+const string USER_DATAFILE = "C:/Users/gongt/Desktop/Pnetphlix/shortUsers.txt";
 const string MOVIE_DATAFILE = "movies.txt";
 
 //int main()
@@ -51,14 +52,15 @@ const string MOVIE_DATAFILE = "movies.txt";
 //			cout << "Found " << u->get_full_name() << endl;
 //	}
 //}
+
 //int main()
 //{
-//	//TreeMultimap<int, int> emptryTree;
-//	//TreeMultimap<int, int>::Iterator it = emptryTree.find(2); // doesn't point to any value
-//	/*TreeMultimap<int, int> multiTree;
-//	multiTree.insert(10, 20);
-//	it = multiTree.find(10);*/
-//	//if (!it.is_valid()) std::cout << "This will print!\n";
+	//TreeMultimap<int, int> emptryTree;
+	//TreeMultimap<int, int>::Iterator it = emptryTree.find(2); // doesn't point to any value
+	/*TreeMultimap<int, int> multiTree;
+	multiTree.insert(10, 20);
+	it = multiTree.find(10);*/
+	//if (!it.is_valid()) std::cout << "This will print!\n";
 //}
 
 //int main()
@@ -80,6 +82,13 @@ const string MOVIE_DATAFILE = "movies.txt";
 //	assert(!it.is_valid());
 //	cout << "passed " << endl;
 //
+//	TreeMultimap<int, int> emptryTree;
+//	TreeMultimap<int, int>::Iterator it = emptryTree.find(2); // doesn't point to any value
+//	TreeMultimap<int, int> multiTree;
+//	multiTree.insert(10, 20);
+//	it = multiTree.find(10);
+//	if (!it.is_valid()) std::cout << "This will print!\n";
+//
 //	//TreeMultimap<std::string, int> tmm;
 //	//tmm.insert("carey", 5);
 //	//tmm.insert("carey", 6);
@@ -92,9 +101,10 @@ const string MOVIE_DATAFILE = "movies.txt";
 //	//	std::cout << it.get_value() << std::endl;
 //	//	it.advance();
 //	//}
-//	//Iterator it = tmm.find("laura");
+//	// it = tmm.find("laura");
 //	//if (!it.is_valid())
 //	//	std::cout << "laura is not in the multimap!\n";
+//	//fix this --- not printing 
 //}
 
 int main() {

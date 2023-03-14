@@ -51,7 +51,7 @@ bool UserDatabase::load(const string& filename)
             infile.ignore(100000, '\n'); //because we are reading an int before string
             cerr << "NumMovies " << numMovies << endl;
             
-            vector<string> movieIDs;
+            vector<string> movieIDs;    //this is watch history
             //vector<> movieID;
             for (int i = 0; i < numMovies; i++)
             {
@@ -61,7 +61,8 @@ bool UserDatabase::load(const string& filename)
                 movieIDs.push_back(movieID);
             }
 
-            User* user = new User(name, email, movieIDs);
+            User user(name, email, movieIDs);
+            //User* user = new User(name, email, movieIDs);
                 
                 //User user(name, email, movieIDs);
                 //m_users.insert();
@@ -71,14 +72,18 @@ bool UserDatabase::load(const string& filename)
                 //infile reads in a line, and advances to the next
                 //get line reads the line and puts it in string s
 
-             //Map email to user  
+            //Map email to user  
             cerr << "Map " << email << " to user " << name << endl;
-            //user.insert(email, userEmail);
-            
+            m_userData.insert(email, user);
+            movieIDs.clear();
+            //user->insert(email, m_userEmail);
+            getline(infile, line);
 
         }
+        infile.close();
         return true;
     }
+
     return false;
     cerr << "didn't open" << endl;
     /*return false; */ // Replace this line with correct code.
@@ -86,7 +91,15 @@ bool UserDatabase::load(const string& filename)
 
 User* UserDatabase::get_user_from_email(const string& email) const
 {
+    std::string u_email;
+    TreeMultimap<std::string, User>::Iterator it = m_userData.find(email);
+    if (!it.is_valid())
+    {
+        return nullptr;
+    }
+    return &(it.get_value());
     //return userEmail;
     //User* userData = userEmail.find(email);
-    return nullptr;  // Replace this line with correct code.
+  
+    //return nullptr;  // Replace this line with correct code.
 }

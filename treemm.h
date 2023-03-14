@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 #include <stack>
+using namespace std;
 
 template <typename KeyType, typename ValueType>
 class TreeMultimap
@@ -54,6 +55,7 @@ public:
             :vector_iterator(vectorValues->end())
             //this creates invalid iterator
         {
+            cerr << "balls" << endl;
             // Replace this line with correct code.
         }
 
@@ -85,7 +87,7 @@ public:
                 return false;
             }*/
             //return false;   // Replace this line with correct code.
-            return vector_iterator != vectorValues->end();
+            return (vector_iterator != vectorValues->end() && vector_iterator >= vectorValues->begin());
         }
 
         void advance()
@@ -94,7 +96,7 @@ public:
             {
                 vector_iterator++;
             }
-
+            return;
             //increment iterator
 
           /*  if (curr_node != nullptr)
@@ -285,8 +287,7 @@ public:
                 //continue searching right
                 current = current->right;
             }
-        }
-        
+        }    
         //BSTNode* node = root.get();
         //.get() returns a raw pointer to the root node
         //BSTNode* parent = nullptr;
@@ -410,11 +411,13 @@ public:
                 return Iterator(&(curr->value));
             }
         }
+
         if (curr == nullptr)
         {
-            return Iterator();
+            return Iterator(nullptr);
         }
-        return Iterator();
+        return Iterator(nullptr);
+
         //return Iterator(&(curr->value));
         //returns reference to the curr's node's vector of values
         //each node has a vector of values
