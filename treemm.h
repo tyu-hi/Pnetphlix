@@ -30,6 +30,7 @@ private:
     };
 
     BSTNode* root;
+
     void deleteNode(BSTNode* curr)
     {
         if (curr == nullptr)
@@ -51,17 +52,14 @@ public:
     public:
         Iterator()
             :vector_iterator(vectorValues->end())
-            //curr_node(nullptr)
             //this creates invalid iterator
         {
             // Replace this line with correct code.
         }
 
         Iterator(std::vector<ValueType>* valuePtr)
-            /*:curr_node(node)*/
         {
             vectorValues = valuePtr;
-            //duplicates = node->duplicates;
             vector_iterator = valuePtr->begin();
         }
 
@@ -92,7 +90,11 @@ public:
 
         void advance()
         {
-            vector_iterator++;
+            if (is_valid())
+            {
+                vector_iterator++;
+            }
+
             //increment iterator
 
           /*  if (curr_node != nullptr)
@@ -267,6 +269,7 @@ public:
             }
             else if (key == current->key)
             {
+                //check if value is in vector?
                 current->value.push_back(value);
                 break;
             }
@@ -384,7 +387,6 @@ public:
         //        parent->right = newNode;
         //    }
         //    newNode->parent = parent;
-
     }
 
     Iterator find(const KeyType& key) const
@@ -400,17 +402,20 @@ public:
             else if (key < curr->key)
             {
                 curr = curr->left;
+                return Iterator(&(curr->value));
             }
             else
             {
                 curr = curr->right;
+                return Iterator(&(curr->value));
             }
         }
         if (curr == nullptr)
         {
             return Iterator();
         }
-        return Iterator(&(curr->value));
+        return Iterator();
+        //return Iterator(&(curr->value));
         //returns reference to the curr's node's vector of values
         //each node has a vector of values
 

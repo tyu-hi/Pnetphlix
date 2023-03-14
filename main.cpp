@@ -32,7 +32,7 @@ const string MOVIE_DATAFILE = "movies.txt";
 //int main()
 //{
 //	UserDatabase udb;
-//	if (0&&!udb.load(USER_DATAFILE))  // In skeleton, load always return false
+//	if (!udb.load(USER_DATAFILE))  // In skeleton, load always return false
 //	{
 //		cout << "Failed to load user data file " << USER_DATAFILE << "!" << endl;
 //		return 1;
@@ -61,38 +61,57 @@ const string MOVIE_DATAFILE = "movies.txt";
 //	//if (!it.is_valid()) std::cout << "This will print!\n";
 //}
 
-int main()
-{
-	TreeMultimap<int, int> tmm;
-	tmm.insert(1, 10);
-	tmm.insert(2, 20);
-	tmm.insert(3, 30);
-	tmm.insert(1, 100);
-	tmm.insert(2, 200);
-	tmm.insert(3, 300);
-	TreeMultimap<int, int>::Iterator it = tmm.find(1);
-	assert(it.is_valid());
-	assert(it.get_value() == 10);
-	it.advance();
-	assert(it.is_valid());
-	assert(it.get_value() == 100);
-	it.advance();
-	assert(!it.is_valid());
-	cout << "passed " << endl;
+//int main()
+//{
+//	TreeMultimap<int, int> tmm;
+//	tmm.insert(1, 10);
+//	tmm.insert(2, 20);
+//	tmm.insert(3, 30);
+//	tmm.insert(1, 100);
+//	tmm.insert(2, 200);
+//	tmm.insert(3, 300);
+//	TreeMultimap<int, int>::Iterator it = tmm.find(1);
+//	assert(it.is_valid());
+//	assert(it.get_value() == 10);
+//	it.advance();
+//	assert(it.is_valid());
+//	assert(it.get_value() == 100);
+//	it.advance();
+//	assert(!it.is_valid());
+//	cout << "passed " << endl;
+//
+//	//TreeMultimap<std::string, int> tmm;
+//	//tmm.insert("carey", 5);
+//	//tmm.insert("carey", 6);
+//	//tmm.insert("carey", 7);
+//	//tmm.insert("david", 25);
+//	//tmm.insert("david", 425);
+//	//TreeMultimap<std::string, int>::Iterator it = tmm.find("carey");
+//	//// prints 5, 6, and 7 in some order
+//	//while (it.is_valid()) {
+//	//	std::cout << it.get_value() << std::endl;
+//	//	it.advance();
+//	//}
+//	//Iterator it = tmm.find("laura");
+//	//if (!it.is_valid())
+//	//	std::cout << "laura is not in the multimap!\n";
+//}
 
-	//TreeMultimap<std::string, int> tmm;
-	//tmm.insert("carey", 5);
-	//tmm.insert("carey", 6);
-	//tmm.insert("carey", 7);
-	//tmm.insert("david", 25);
-	//tmm.insert("david", 425);
-	//TreeMultimap<std::string, int>::Iterator it = tmm.find("carey");
-	//// prints 5, 6, and 7 in some order
-	//while (it.is_valid()) {
-	//	std::cout << it.get_value() << std::endl;
-	//	it.advance();
-	//}
-	//Iterator it = tmm.find("laura");
-	//if (!it.is_valid())
-	//	std::cout << "laura is not in the multimap!\n";
+int main() {
+	TreeMultimap<std::string, int> tmm;
+	tmm.insert("carey", 5);
+	tmm.insert("carey", 6);
+	tmm.insert("carey", 7);
+	tmm.insert("david", 25);
+	tmm.insert("david", 425);
+	TreeMultimap<std::string, int>::Iterator it = tmm.find("carey");
+	// prints 5, 6, and 7 in some order
+	while (it.is_valid()) {
+		std::cout << it.get_value() << std::endl;
+		it.advance();
+		//std::cout << "im here " << std::endl;
+	}
+	it = tmm.find("laura");
+	if (!it.is_valid())
+		std::cout << "laura is not in the multimap!\n";
 }
