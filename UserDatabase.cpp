@@ -91,7 +91,6 @@ bool UserDatabase::load(const string& filename)
 
 User* UserDatabase::get_user_from_email(const string& email) const
 {
-    std::string u_email;
     TreeMultimap<std::string, User>::Iterator it = m_userData.find(email);
     if (!it.is_valid())
     {
