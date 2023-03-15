@@ -40,7 +40,7 @@ bool UserDatabase::load(const string& filename)
                 cerr << "entering new line " << endl;
             }
             string name = line;
-
+            cerr << "name: " << name << endl;
             string email;
             getline(infile, email);
             cerr << "email:" << email << endl;
