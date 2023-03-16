@@ -17,11 +17,14 @@ class MovieDatabase
     std::vector<Movie*> get_movies_with_genre(const std::string& genre) const;
 
   private:
+      //string makeUpper(string& word);
 
       TreeMultimap<std::string, Movie> m_movieID;
+      
       TreeMultimap<std::string, Movie> m_movieDirector;
       TreeMultimap<std::string, Movie> m_movieActor;
       TreeMultimap<std::string, Movie> m_movieGenre;
+
 };
 
 #endif // MOVIEDATABASE_INCLUDED

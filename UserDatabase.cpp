@@ -62,7 +62,7 @@ bool UserDatabase::load(const string& filename)
             }
 
             User user(name, email, movieIDs);
-            //User* user = new User(name, email, movieIDs);
+ 
                 
                 //User user(name, email, movieIDs);
                 //m_users.insert();

@@ -26,6 +26,8 @@ class Recommender
                                                int movie_count);
 
   private:
+      UserDatabase m_userData;
+      MovieDatabase m_movieData;
 };
 
 #endif // RECOMMENDER_INCLUDED

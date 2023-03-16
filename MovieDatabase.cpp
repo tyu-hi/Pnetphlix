@@ -5,7 +5,8 @@
 #include <vector>
 #include "treemm.h"
 #include <fstream>
-
+#include <sstream>
+#include <cstring>
 using namespace std;
 
 MovieDatabase::MovieDatabase()
@@ -38,48 +39,81 @@ bool MovieDatabase::load(const string& filename)
             {
                 getline(file, line);
             }
-            string movieID = line;
-            string movieName;
-            getline(file, movieName);
-            cerr << "moviename: " << movieID << endl;
+            std::string movieID = line;
+            cerr << "movieID: " << movieID << endl;
 
-            int movieReleaseYear;
-            file >> movieReleaseYear;
-            file.ignore(100000, '\n');
+            std::string movieName;
+            getline(file, movieName);
+            cerr << "moviename: " << movieName << endl;
+
+            std::string movieReleaseYear;
+            getline(file, movieReleaseYear);
             cerr << "movie release year: " << movieReleaseYear << endl;
 
+            //push_Back all data with multiple values into a vector, parsing by comma
             vector<string> directors;
-            while (std::getline(file, line))
+            getline(file, line);
+            istringstream iss_directors(line);
+            string directorNames;
+            while (std::getline(iss_directors, directorNames, ','))
             {
-                string substring;
-                getline(file, substring, ',');
-                cerr << "directors: " << substring << " " << endl;
-                directors.push_back(substring);
+                cerr << "director: " << directorNames << endl;
+                directors.push_back(directorNames);
             }
 
             vector<string> actors;
-            while (std::getline(file, line))
+            getline(file, line);
+            istringstream iss_actors(line);
+            string actorNames;
+            while (getline(iss_actors, actorNames, ','))
             {
-                string substring;
-                getline(file, substring, ',');
-                cerr << "acrors: " << substring << " " << endl;
-                actors.push_back(substring);
+                cerr << "actors: " << actorNames << endl;
+                actors.push_back(actorNames);
             }
 
             vector<string> genres;
-            while (file.good())
+            getline(file, line);
+            istringstream iss_genres(line);
+            string genreNames;
+            while (getline(iss_genres, genreNames, ','))
             {
-                string substring;
-                getline(file, substring, ',');
-                cerr << "genres: " << substring << " " << endl;
-                genres.push_back(substring);
+                //makeUpper(genreNames);
+                cerr << "Genres: " << genreNames << endl;
+                genres.push_back(genreNames);
             }
 
             float rating;
             file >> rating;
             cerr << "rating: " << rating << endl;
-           
-            //for (int i = 0; i < )
+
+            Movie movie(movieID, movieName, movieReleaseYear, directors, actors, genres, rating);   //passing in vectors and values
+            
+            //for case insensitivity, toupper everything
+            for (int i = 0; i < movieID.size(); i++) {
+                movieID[i] = tolower(movieID[i]);
+            }
+            for (int i = 0; i < directorNames.size(); i++) {
+                directorNames[i] = tolower(directorNames[i]);
+            }
+            for (int i = 0; i < actorNames.size(); i++) {
+                actorNames[i] = tolower(actorNames[i]);
+            }
+            for (int i = 0; i < genreNames.size(); i++) {
+                genreNames[i] = tolower(genreNames[i]);
+            }
+
+
+            //map movieID to movie object
+            m_movieID.insert(movieID, movie);
+            //map tree directors to movie object
+            m_movieDirector.insert(directorNames, movie);
+            //map actors to movie object
+            m_movieActor.insert(actorNames, movie);
+            //map string genres to movie object
+            m_movieGenre.insert(genreNames, movie);
+
+            //suspicious
+            getline(file, line);
             getline(file, line);
         }
         return true;
@@ -90,6 +124,10 @@ bool MovieDatabase::load(const string& filename)
 Movie* MovieDatabase::get_movie_from_id(const string& id) const
 {
     std::string u_id = id;
+    //for case-inensitivity
+    for (int i = 0; i < u_id.size(); i++) {
+        u_id[i] = tolower(u_id[i]);
+    }
 
     TreeMultimap<std::string, Movie>::Iterator it = m_movieID.find(u_id);
 
@@ -106,7 +144,13 @@ vector<Movie*> MovieDatabase::get_movies_with_director(const string& director) c
 {
     //create vector, push back (*(it.get_value), then return
     vector<Movie*> vectorDirector;
-    TreeMultimap<std::string, Movie>::Iterator it = m_movieDirector.find(director);
+
+    string newdirector = director;
+    for (int i = 0; i < newdirector.size(); i++) {
+        newdirector[i] = tolower(newdirector[i]);
+    }
+
+    TreeMultimap<std::string, Movie>::Iterator it = m_movieDirector.find(newdirector);
 
     while (it.is_valid())
     {
@@ -121,7 +165,13 @@ vector<Movie*> MovieDatabase::get_movies_with_director(const string& director) c
 vector<Movie*> MovieDatabase::get_movies_with_actor(const string& actor) const
 {
     vector<Movie*> vectorActor;
-    TreeMultimap<std::string, Movie>::Iterator it = m_movieActor.find(actor);
+
+    string newactor = actor;
+    for (int i = 0; i < newactor.size(); i++) {
+        newactor[i] = tolower(newactor[i]);
+    }
+
+    TreeMultimap<std::string, Movie>::Iterator it = m_movieActor.find(newactor);
 
     while (it.is_valid())
     {
@@ -135,9 +185,14 @@ vector<Movie*> MovieDatabase::get_movies_with_actor(const string& actor) const
 
 vector<Movie*> MovieDatabase::get_movies_with_genre(const string& genre) const
 {
-
     vector<Movie*> vectorGenre;
-    TreeMultimap<std::string, Movie>::Iterator it = m_movieGenre.find(genre);
+
+    string newgenre = genre;
+    for (int i = 0; i < newgenre.size(); i++) {
+        newgenre[i] = tolower(newgenre[i]);
+    }
+
+    TreeMultimap<std::string, Movie>::Iterator it = m_movieGenre.find(newgenre);
 
     while (it.is_valid())
     {
@@ -148,3 +203,11 @@ vector<Movie*> MovieDatabase::get_movies_with_genre(const string& genre) const
     return vectorGenre;
     //return vector<Movie*>();  // Replace this line with correct code.
 }
+
+//string makeUpper(string& word)
+//{
+//    for (int i = 0; i < word.size(); i++) {
+//        word[i] = toupper(word[i]);
+//    }
+//    return word;
+//}
